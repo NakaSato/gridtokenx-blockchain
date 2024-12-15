@@ -1,0 +1,27 @@
+[package]
+name = "solar-grid-node"
+version = "0.1.0"
+edition = "2021"
+authors = ["SolarGridX Team"]
+
+[dependencies]
+clap = { version = "4.0.9", features = ["derive"] }
+futures = "0.3.21"
+log = "0.4.17"
+tokio = { version = "1.20.1", features = ["full"] }
+
+sc-cli = { version = "0.10.0-dev", features = ["wasmtime"] }
+sc-client-api = "4.0.0-dev"
+sc-consensus = "0.10.0-dev"
+sc-consensus-aura = "0.10.0-dev"
+sc-executor = "0.10.0-dev"
+sc-network = "0.10.0-dev"
+sc-service = "0.10.0-dev"
+sc-telemetry = "4.0.0-dev"
+sc-transaction-pool = "4.0.0-dev"
+sp-consensus-aura = "0.10.0-dev"
+sp-core = "6.0.0"
+sp-runtime = "6.0.0"
+
+# Local dependencies
+solar-grid-runtime = { path = "../runtime" }

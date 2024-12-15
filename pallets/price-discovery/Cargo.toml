@@ -1,0 +1,30 @@
+[package]
+name = "pallet-price-discovery"
+version = "0.1.0"
+edition = "2021"
+authors = ["SolarGridX Team"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = ["derive"] }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+frame-support = { version = "4.0.0-dev", default-features = false }
+frame-system = { version = "4.0.0-dev", default-features = false }
+sp-runtime = { version = "6.0.0", default-features = false }
+sp-io = { version = "6.0.0", default-features = false }
+sp-std = { version = "4.0.0-dev", default-features = false }
+pallet-energy-trade = { path = "../energy-trade", default-features = false }
+pallet-energy-transfer = { path = "../energy-transfer", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+    "codec/std",
+    "scale-info/std",
+    "frame-support/std",
+    "frame-system/std",
+    "sp-runtime/std",
+    "sp-io/std",
+    "sp-std/std",
+    "pallet-energy-trade/std",
+    "pallet-energy-transfer/std",
+]

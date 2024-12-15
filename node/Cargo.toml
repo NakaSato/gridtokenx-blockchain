@@ -25,3 +25,6 @@ sp-runtime = "4.0.0-dev"
 
 # Local dependencies
 solar-grid-runtime = { path = "../runtime" }
+
+# Add this line to force a specific version of parity-util-mem
+parity-util-mem = "=0.11.0"

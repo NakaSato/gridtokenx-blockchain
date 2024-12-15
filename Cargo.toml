@@ -1,5 +1,5 @@
 [package]
-name = "solar_grid_x"
+name = "smart_solar_grid"
 version = "0.1.0"
 edition = "2021"
 authors = ["SolarGridX Team"]
@@ -7,13 +7,14 @@ description = "A blockchain-based P2P energy trading platform"
 
 [dependencies]
 # Core dependencies
-substrate-primitives = "3.0.0"
-parity-scale-codec = { version = "3.0.0", features = ["derive"] }
-frame-support = "3.0.0"
-frame-system = "3.0.0"
-sp-runtime = "3.0.0"
-sp-core = "3.0.0"
-sp-std = "3.0.0"
+parity-scale-codec = { version = "3.2.2", features = ["derive"] }
+frame-support = "4.0.0"
+frame-system = "4.0.0"
+sp-runtime = "4.0.0"
+sp-core = "4.0.0"
+sp-std = "4.0.0"
+sp-io = "4.0.0"
+sp-version = "4.0.0"
 
 # Async runtime
 tokio = { version = "1.28", features = ["full"] }
@@ -31,6 +32,9 @@ hex = "0.4"
 members = [
     "pallets/energy-token",
     "pallets/energy-trade",
-    "pallets/user-registry",
+    "pallets/energy-transfer",
+    "pallets/payment-settlement",
+    "pallets/price-discovery",
+    "node",
     "runtime",
 ]

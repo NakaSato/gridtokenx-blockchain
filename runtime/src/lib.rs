@@ -31,7 +31,7 @@ parameter_types! {
         authoring_version: 1,
         spec_version: 1,
         impl_version: 1,
-        apis: RUNTIME_API_VERSIONS,
+        apis: sp_version::ApiVersions::empty(),
         transaction_version: 1,
         state_version: 1,
     };
@@ -80,6 +80,14 @@ impl frame_system::Config for Runtime {
     type SS58Prefix = ConstU16<42>;
     type OnSetCode = ();
     type MaxConsumers = ConstU32<16>;
+    type RuntimeTask = ();
+    type Nonce = ();
+    type AccountData = ();
+    type SingleBlockMigrations = ();
+    type MultiBlockMigrator = ();
+    type PreInherents = ();
+    type PostInherents = ();
+    type PostTransactions = ();
 }
 
 impl pallet_energy_token::Config for Runtime {

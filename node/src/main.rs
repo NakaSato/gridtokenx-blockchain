@@ -1,3 +1,5 @@
+mod service;
+
 use sc_service::Configuration;
 use solar_grid_node::service;
 

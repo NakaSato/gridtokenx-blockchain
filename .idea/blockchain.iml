@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="EMPTY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/node/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/energy-token/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/energy-trade/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/energy-transfer/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/payment-settlement/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/price-discovery/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pallets/user-registry/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/runtime/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

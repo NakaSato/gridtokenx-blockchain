@@ -5,23 +5,23 @@ edition = "2021"
 authors = ["SolarGridX Team"]
 
 [dependencies]
-clap = { version = "4.0.9", features = ["derive"] }
-futures = "0.3.21"
-log = "0.4.17"
-tokio = { version = "1.20.1", features = ["full"] }
+#clap = { version = "4.0.9", features = ["derive"] }
+#futures = "0.3.21"
+#log = "0.4.17"
+#tokio = { version = "1.20.1", features = ["full"] }
 
 sc-cli = { version = "0.47.0" }
-sc-client-api = { version = "37.0.0" }
+#sc-client-api = { version = "37.0.0" }
 sc-consensus = { version = "0.44.0" }
 sc-consensus-aura = { version = "0.45.0" }
 sc-executor = "0.40.1"
-sc-network = "0.45.3"
+#sc-network = "0.45.3"
 sc-service = "0.46.0"
 sc-telemetry = "25.0.0"
 sc-transaction-pool = "37.0.0"
 sp-consensus-aura = "0.40.0"
-sp-core = "34.0.0"
-sp-runtime = "39.0.5"
+#sp-core = "34.0.0"
+#sp-runtime = "39.0.5"
 
 # Local dependencies
 solar-grid-runtime = { path = "../runtime" }

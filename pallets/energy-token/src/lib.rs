@@ -1,12 +1,15 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use frame_support::pallet::*;
+pub use frame_system::pallet::*;
 
 #[frame_support::pallet]
 pub mod pallet {
-    use frame_support::{pallet_prelude::*, traits::Currency};
+    use frame_support::pallet_prelude::*;
     use frame_system::pallet_prelude::*;
-    use sp_runtime::traits::{AtLeast32BitUnsigned, Zero};
+    use sp_runtime::traits::{AtLeast32BitUnsigned};
+
+    #[pallet::pallet]
+    pub struct Pallet<T>(_);
 
     #[pallet::config]
     pub trait Config: frame_system::Config {
@@ -14,12 +17,6 @@ pub mod pallet {
         type TokenBalance: Member + Parameter + AtLeast32BitUnsigned + Default + Copy;
     }
 
-    #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
-    pub struct Pallet<T>(_);
-
-    #[pallet::storage]
-    #[pallet::getter(fn token_balance)]
     pub type TokenBalance<T: Config> = StorageMap<
         _,
         Blake2_128Concat,

@@ -1,4 +1,3 @@
-use sc_client_api::ExecutorProvider;
 use sc_consensus_aura::{ImportQueueParams, SlotProportion, StartAuraParams};
 use sc_executor::NativeElseWasmExecutor;
 use sc_service::{error::Error as ServiceError, Configuration, TaskManager};
@@ -6,7 +5,7 @@ use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_consensus_aura::sr25519::AuthorityPair as AuraPair;
 use solar_grid_runtime::{self, RuntimeApi};
 
-pub type FullClient = sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<ExecutorDispatch>>;
+use solar_grid_runtime::{self, RuntimeApi, Block};
 pub type FullBackend = sc_service::TFullBackend<Block>;
 pub type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
@@ -77,6 +76,7 @@ pub fn new_partial(
         registry: config.prometheus_registry(),
         check_for_equivocation: Default::default(),
         telemetry: telemetry.as_ref().map(|x| x.handle()),
+        compatibility_mode: todo!(),
     })?;
 
     Ok(sc_service::PartialComponents {
@@ -112,6 +112,10 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
             import_queue,
             block_announce_validator_builder: None,
             warp_sync: None,
+            net_config: todo!(),
+            warp_sync_config: todo!(),
+            block_relay: todo!(),
+            metrics: todo!(),
         })?;
 
     if config.offchain_worker.enabled {
@@ -157,6 +161,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
         tx_handler_controller,
         config,
         telemetry: telemetry.as_mut(),
+        sync_service: todo!(),
     })?;
 
     if role.is_authority() {
@@ -189,6 +194,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
                 block_proposal_slot_portion: SlotProportion::new(2f32 / 3f32),
                 max_block_proposal_slot_portion: None,
                 telemetry: telemetry.as_ref().map(|x| x.handle()),
+                compatibility_mode: todo!(),
             },
         )?;
 

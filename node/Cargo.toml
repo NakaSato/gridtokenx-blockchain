@@ -6,6 +6,12 @@ authors = ["SolarGridX Team"]
 
 [dependencies]
 sc-cli = { version = "0.47.0", default-features = false }
+sc-client-api = "37.0.0"
+sc-consensus-aura = "0.45.0"
+sc-executor = "0.40.1"
 sc-service = "0.46.0"
+sc-telemetry = "25.0.0"
+sp-consensus-aura = "0.40.0"
 
 # Local dependencies
+solar-grid-runtime = { path = "../runtime" }

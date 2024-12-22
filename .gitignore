@@ -1,0 +1,23 @@
+# Rust build directory
+/target/
+
+# Cargo lock (uncomment if this is a library)
+# Cargo.lock
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS specific
+.DS_Store
+
+# Blockchain specific
+*.db
+chain_data/
+node_modules/
+
+# Environment files
+.env
+*.pem

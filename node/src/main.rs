@@ -1,7 +1,6 @@
 mod service;
 
-use sc_service::Configuration;
-use solar_grid_node::service;
+use crate::solar_grid_node::service;
 
 fn main() -> sc_cli::Result<()> {
     let cli = sc_cli::SubstrateCli::from_args();

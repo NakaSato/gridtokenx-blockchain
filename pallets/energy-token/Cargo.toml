@@ -5,9 +5,9 @@ edition = "2021"
 authors = ["SolarGridX Team"]
 
 [dependencies]
+codec = { package = "parity-scale-codec", version = "3.6.12", default-features = false, features = ["derive"] }
+frame-system = "38.0.0"
 scale-info = { version = "2.11.6", default-features = false, features = ["derive"] }
-frame-support = { version = "38.2.0", default-features = false }
-frame-system = { version = "38.0.0", default-features = false }
 sp-runtime = { version = "39.0.5", default-features = false }
 
 [dependencies.codec]

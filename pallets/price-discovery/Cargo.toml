@@ -5,4 +5,26 @@ edition = "2021"
 authors = ["SolarGridX Team"]
 
 [dependencies]
-frame-support = { version = "38.0.0", default-features = false }
+codec = { package = "parity-scale-codec", version = "3.6.12", default-features = false, features = ["derive"] }
+scale-info = { version = "2.11.6", default-features = false, features = ["derive"] }
+frame-support = { version = "40.1.0", default-features = false }
+frame-system = { version = "40.2.0", default-features = false }
+sp-runtime = { version = "41.1.0", default-features = false }
+sp-std = { version = "14.0.0", default-features = false }
+pallet-energy-trade = { path = "../energy-trade", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+    "codec/std",
+    "scale-info/std",
+    "frame-support/std",
+    "frame-system/std",
+    "sp-runtime/std",
+    "sp-std/std",
+    "pallet-energy-trade/std",
+]
+try-runtime = [
+    "frame-support/try-runtime",
+    "frame-system/try-runtime",
+]

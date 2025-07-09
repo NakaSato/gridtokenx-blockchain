@@ -4,19 +4,20 @@ pub use pallet::*;
 
 #[frame_support::pallet]
 pub mod pallet {
-    use frame_support::{pallet_prelude::*, traits::Currency};
+    use frame_support::{pallet_prelude::*, traits::Currency, BoundedVec};
     use frame_system::pallet_prelude::*;
     use scale_info::TypeInfo;
     use sp_std::prelude::*;
+    use sp_runtime::traits::{AtLeast32BitUnsigned, Hash, CheckedAdd, CheckedSub};
     use pallet_energy_token;
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     pub enum OrderType {
         Ask,    // Seller's offer
         Bid,    // Buyer's offer
     }
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     pub enum OrderStatus {
         Open,
         Matched,
@@ -26,7 +27,7 @@ pub mod pallet {
         Failed,
     }
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     #[scale_info(skip_type_params(T))]
     pub struct TradeOrder<T: Config> {
         pub order_type: OrderType,
@@ -36,22 +37,21 @@ pub mod pallet {
         pub price_per_unit: T::TokenBalance,
         pub total_price: T::TokenBalance,
         pub status: OrderStatus,
-        pub grid_location: Vec<u8>,
-        pub created_at: T::BlockNumber,
-        pub matched_at: Option<T::BlockNumber>,
-        pub completed_at: Option<T::BlockNumber>,
+        pub grid_location: BoundedVec<u8, ConstU32<32>>,
+        pub created_at: BlockNumberFor<T>,
+        pub matched_at: Option<BlockNumberFor<T>>,
+        pub completed_at: Option<BlockNumberFor<T>>,
         pub transfer_verification: Option<T::Hash>,
     }
 
     #[pallet::config]
     pub trait Config: frame_system::Config + pallet_energy_token::Config {
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-        type TokenBalance: Member + Parameter + AtLeast32BitUnsigned + Default + Copy;
+        type TokenBalance: Member + Parameter + AtLeast32BitUnsigned + Default + Copy + MaxEncodedLen;
         type Currency: Currency<Self::AccountId>;
     }
 
     #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
     pub struct Pallet<T>(_);
 
     #[pallet::storage]
@@ -64,7 +64,7 @@ pub mod pallet {
         _,
         Blake2_128Concat,
         T::AccountId,
-        Vec<T::Hash>,
+        BoundedVec<T::Hash, ConstU32<100>>,
         ValueQuery,
     >;
 
@@ -121,10 +121,13 @@ pub mod pallet {
         OrderMismatch,
         TransferVerificationFailed,
         PaymentFailed,
+        InvalidLocation,
+        TooManyOrders,
     }
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {
+        #[pallet::call_index(0)]
         #[pallet::weight(10_000)]
         pub fn create_ask_order(
             origin: OriginFor<T>,
@@ -140,6 +143,9 @@ pub mod pallet {
                 .checked_mul(&energy_amount)
                 .ok_or(Error::<T>::InvalidPrice)?;
 
+            let bounded_location: BoundedVec<u8, ConstU32<32>> = grid_location.try_into()
+                .map_err(|_| Error::<T>::InvalidLocation)?;
+
             let order = TradeOrder {
                 order_type: OrderType::Ask,
                 creator: seller.clone(),
@@ -148,7 +154,7 @@ pub mod pallet {
                 price_per_unit,
                 total_price,
                 status: OrderStatus::Open,
-                grid_location: grid_location.clone(),
+                grid_location: bounded_location,
                 created_at: <frame_system::Pallet<T>>::block_number(),
                 matched_at: None,
                 completed_at: None,
@@ -158,7 +164,10 @@ pub mod pallet {
             let order_id = T::Hashing::hash_of(&order);
             <TradeOrders<T>>::insert(order_id, order);
             
-            UserOrders::<T>::append(seller.clone(), order_id);
+            UserOrders::<T>::try_mutate(&seller, |orders| -> DispatchResult {
+                orders.try_push(order_id).map_err(|_| Error::<T>::TooManyOrders)?;
+                Ok(())
+            })?;
 
             Self::deposit_event(Event::AskOrderCreated {
                 order_id,
@@ -171,6 +180,7 @@ pub mod pallet {
             Ok(())
         }
 
+        #[pallet::call_index(1)]
         #[pallet::weight(10_000)]
         pub fn create_bid_order(
             origin: OriginFor<T>,
@@ -186,11 +196,8 @@ pub mod pallet {
                 .checked_mul(&energy_amount)
                 .ok_or(Error::<T>::InvalidPrice)?;
 
-            // Check if buyer has enough balance
-            ensure!(
-                T::Currency::free_balance(&buyer) >= total_price,
-                Error::<T>::InsufficientBalance
-            );
+            let bounded_location: BoundedVec<u8, ConstU32<32>> = grid_location.try_into()
+                .map_err(|_| Error::<T>::InvalidLocation)?;
 
             let order = TradeOrder {
                 order_type: OrderType::Bid,
@@ -200,7 +207,7 @@ pub mod pallet {
                 price_per_unit,
                 total_price,
                 status: OrderStatus::Open,
-                grid_location: grid_location.clone(),
+                grid_location: bounded_location,
                 created_at: <frame_system::Pallet<T>>::block_number(),
                 matched_at: None,
                 completed_at: None,
@@ -210,7 +217,10 @@ pub mod pallet {
             let order_id = T::Hashing::hash_of(&order);
             <TradeOrders<T>>::insert(order_id, order);
             
-            UserOrders::<T>::append(buyer.clone(), order_id);
+            UserOrders::<T>::try_mutate(&buyer, |orders| -> DispatchResult {
+                orders.try_push(order_id).map_err(|_| Error::<T>::TooManyOrders)?;
+                Ok(())
+            })?;
 
             Self::deposit_event(Event::BidOrderCreated {
                 order_id,
@@ -223,6 +233,7 @@ pub mod pallet {
             Ok(())
         }
 
+        #[pallet::call_index(2)]
         #[pallet::weight(10_000)]
         pub fn match_orders(
             origin: OriginFor<T>,
@@ -265,6 +276,7 @@ pub mod pallet {
             Ok(())
         }
 
+        #[pallet::call_index(3)]
         #[pallet::weight(10_000)]
         pub fn verify_transfer(
             origin: OriginFor<T>,
@@ -291,6 +303,7 @@ pub mod pallet {
             })
         }
 
+        #[pallet::call_index(4)]
         #[pallet::weight(10_000)]
         pub fn complete_trade(
             origin: OriginFor<T>,

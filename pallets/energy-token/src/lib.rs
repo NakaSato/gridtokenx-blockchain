@@ -6,7 +6,7 @@ pub use frame_system::pallet::*;
 pub mod pallet {
     use frame_support::pallet_prelude::*;
     use frame_system::pallet_prelude::*;
-    use sp_runtime::traits::{AtLeast32BitUnsigned};
+    use sp_runtime::traits::{AtLeast32BitUnsigned, CheckedAdd, CheckedSub};
 
     #[pallet::pallet]
     pub struct Pallet<T>(_);
@@ -14,9 +14,11 @@ pub mod pallet {
     #[pallet::config]
     pub trait Config: frame_system::Config {
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-        type TokenBalance: Member + Parameter + AtLeast32BitUnsigned + Default + Copy;
+        type TokenBalance: Member + Parameter + AtLeast32BitUnsigned + Default + Copy + MaxEncodedLen;
     }
 
+    #[pallet::storage]
+    #[pallet::getter(fn token_balance)]
     pub type TokenBalance<T: Config> = StorageMap<
         _,
         Blake2_128Concat,
@@ -47,6 +49,7 @@ pub mod pallet {
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {
+        #[pallet::call_index(0)]
         #[pallet::weight(10_000)]
         pub fn mint_tokens(
             origin: OriginFor<T>,
@@ -68,6 +71,7 @@ pub mod pallet {
             Ok(())
         }
 
+        #[pallet::call_index(1)]
         #[pallet::weight(10_000)]
         pub fn transfer(
             origin: OriginFor<T>,

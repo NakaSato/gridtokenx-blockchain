@@ -7,25 +7,25 @@ authors = ["SolarGridX Team"]
 [dependencies]
 codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = ["derive"] }
 scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
-frame-executive = { version = "38.0.0", default-features = false }
-frame-support = { version = "38.2.0", default-features = false }
-frame-system = { version = "38.0.0", default-features = false }
-frame-try-runtime = { version = "0.44.0", default-features = false }
-pallet-aura = { version = "37.0.0", default-features = false }
-pallet-balances = { version = "39.0.0", default-features = false }
-pallet-grandpa = { version = "38.0.0", default-features = false }
-pallet-sudo = { version = "38.0.0", default-features = false }
-pallet-timestamp = { version = "37.0.0", default-features = false }
-sp-api = { version = "34.0.0", default-features = false }
-sp-block-builder = { version = "34.0.0", default-features = false }
-sp-consensus-aura = { version = "0.40.0", default-features = false }
-sp-core = { version = "34.0.0", default-features = false }
-sp-inherents = { version = "34.0.0", default-features = false }
-sp-offchain = { version = "34.0.0", default-features = false }
-sp-runtime = { version = "39.0.5", default-features = false }
-sp-session = { version = "36.0.0", default-features = false }
+frame-executive = { version = "40.0.1", default-features = false }
+frame-support = { version = "40.1.0", default-features = false }
+frame-system = { version = "40.2.0", default-features = false }
+frame-try-runtime = { version = "0.46.0", default-features = false }
+pallet-aura = { version = "39.0.0", default-features = false }
+pallet-balances = { version = "41.1.1", default-features = false }
+pallet-grandpa = { version = "40.0.0", default-features = false }
+pallet-sudo = { version = "40.0.0", default-features = false }
+pallet-timestamp = { version = "39.0.0", default-features = false }
+sp-api = { version = "36.0.1", default-features = false }
+sp-block-builder = { version = "36.0.0", default-features = false }
+sp-consensus-aura = { version = "0.42.0", default-features = false }
+sp-core = { version = "36.1.0", default-features = false }
+sp-inherents = { version = "36.0.0", default-features = false }
+sp-offchain = { version = "36.0.0", default-features = false }
+sp-runtime = { version = "41.1.0", default-features = false }
+sp-session = { version = "38.1.0", default-features = false }
 sp-std = { version = "14.0.0", default-features = false }
-sp-transaction-pool = { version = "34.0.0", default-features = false }
+sp-transaction-pool = { version = "36.0.0", default-features = false }
 sp-version = { version = "37.0.0", default-features = false }
 
 # Local dependencies

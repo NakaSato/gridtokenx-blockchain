@@ -6,8 +6,8 @@ authors = ["SolarGridX Team"]
 description = "A blockchain-based P2P energy trading platform"
 
 [dependencies]
-frame-system = "38.0.0"
-frame-support = "38.0.0"
+frame-system = "40.2.0"
+frame-support = "40.1.0"
 
 [workspace]
 resolver = "2"

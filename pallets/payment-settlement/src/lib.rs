@@ -9,6 +9,7 @@ pub mod pallet {
     use pallet_energy_trade::{self as energy_trade};
     use scale_info::TypeInfo;
     use sp_std::prelude::*;
+    use sp_io;
 
     #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
     pub enum PaymentMethod {
@@ -55,7 +56,6 @@ pub mod pallet {
     }
 
     #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
     pub struct Pallet<T>(_);
 
     #[pallet::storage]

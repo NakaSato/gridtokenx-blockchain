@@ -4,12 +4,14 @@ pub use frame_system::pallet::*;
 
 #[frame_support::pallet]
 pub mod pallet {
-    use frame_support::{pallet_prelude::*, traits::Currency};
+    use frame_support::{pallet_prelude::*, traits::Currency, BoundedVec};
     use frame_system::pallet_prelude::*;
     use scale_info::TypeInfo;
     use sp_std::prelude::*;
+    use frame_support::traits::StorageVersion;
+    use sp_runtime::traits::Hash;
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     pub enum UserRole {
         Consumer,
         Prosumer,
@@ -17,27 +19,27 @@ pub mod pallet {
         Admin,
     }
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     #[scale_info(skip_type_params(T))]
     pub struct UserProfile<T: Config> {
         pub role: UserRole,
-        pub devices: Vec<T::Hash>,
+        pub devices: BoundedVec<T::Hash, ConstU32<10>>,
         pub active: bool,
         pub reputation_score: u32,
-        pub registration_date: T::BlockNumber,
+        pub registration_date: BlockNumberFor<T>,
     }
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     #[scale_info(skip_type_params(T))]
     pub struct Device<T: Config> {
         pub owner: T::AccountId,
         pub device_type: DeviceType,
         pub max_capacity: u32,
         pub active: bool,
-        pub registration_date: T::BlockNumber,
+        pub registration_date: BlockNumberFor<T>,
     }
 
-    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo)]
+    #[derive(Clone, Encode, Decode, PartialEq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
     pub enum DeviceType {
         SolarPanel,
         Battery,
@@ -51,7 +53,6 @@ pub mod pallet {
     }
 
     #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
     #[pallet::storage_version(STORAGE_VERSION)]
     pub struct Pallet<T>(_);
 
@@ -105,6 +106,7 @@ pub mod pallet {
         DeviceNotFound,
         Unauthorized,
         InvalidRole,
+        TooManyDevices,
     }
 
     #[pallet::call]
@@ -120,7 +122,7 @@ pub mod pallet {
 
             let profile = UserProfile {
                 role,
-                devices: Vec::new(),
+                devices: BoundedVec::new(),
                 active: true,
                 reputation_score: 100,
                 registration_date: <frame_system::Pallet<T>>::block_number(),
@@ -164,7 +166,7 @@ pub mod pallet {
             Devices::<T>::insert(device_id, device);
             UserProfiles::<T>::try_mutate(&owner, |profile| -> DispatchResult {
                 let profile = profile.as_mut().ok_or(Error::<T>::UserNotFound)?;
-                profile.devices.push(device_id);
+                profile.devices.try_push(device_id).map_err(|_| Error::<T>::TooManyDevices)?;
                 Ok(())
             })?;
 
